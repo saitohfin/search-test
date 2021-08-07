@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import com.google.gson.Gson;
 
 import test.javidesoft.search.TestDBConfig;
+import test.javidesoft.search.price.api.PriceEndpoint;
 import test.javidesoft.search.price.api.dto.PriceDTO;
 
 @SpringBootTest
@@ -37,20 +38,19 @@ public class PriceControllerIntegrationTest {
      */
     @Test
     public void test1() throws Exception {
-        final ResultActions result = this.mockMvc
-            .perform(MockMvcRequestBuilders.get("/price/35455")
-                .param("date", "2020-06-14T10:00:00")
-                .param("brandId", "1")
-            )
-            .andDo(MockMvcResultHandlers.print())
+        final String productId = "35455";
+        final String date = "2020-06-14T10:00:00";
+        final String brandId = "1";
+
+        final ResultActions result = this.findPriceRequest(productId, date, brandId)
             .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
 
         final PriceDTO dtoResult = new Gson().fromJson(result.andReturn().getResponse().getContentAsString(),
             PriceDTO.class);
         final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         final PriceDTO expected = PriceDTO.builder()
-            .brandId("1")
-            .productId("35455")
+            .brandId(brandId)
+            .productId(productId)
             .priceList("1")
             .price(35.5d)
             .startDate(simpleDateFormat.parse("2020-06-14 00:00:00"))
@@ -91,4 +91,17 @@ public class PriceControllerIntegrationTest {
         Assertions.fail();
     }
 
+    private ResultActions findPriceRequest(final String productId, final String date, final String brand)
+        throws Exception {
+
+        final String url = this.findPriceUrl(productId);
+        return this.mockMvc.perform(MockMvcRequestBuilders.get(url)
+            .param("date", date)
+            .param("brandId", brand)
+        ).andDo(MockMvcResultHandlers.print());
+    }
+
+    private String findPriceUrl(final String productId) {
+        return PriceEndpoint.BASE_URL.concat("/").concat(productId);
+    }
 }

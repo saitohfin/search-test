@@ -13,7 +13,9 @@ import test.javidesoft.search.price.api.dto.PriceDTO;
 
 public interface PriceEndpoint {
 
-    @GetMapping("/price/{productId}")
+    String BASE_URL = "/price";
+
+    @GetMapping(BASE_URL + "/{productId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     PriceDTO getPrice(
         @PathVariable("productId") final String productId,
