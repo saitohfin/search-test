@@ -17,13 +17,13 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.google.gson.Gson;
 
-import test.javidesoft.search.ProductDTO;
 import test.javidesoft.search.TestDBConfig;
+import test.javidesoft.search.price.api.dto.PriceDTO;
 
 @SpringBootTest
 @Import({TestDBConfig.class})
 @AutoConfigureMockMvc
-public class SearchControllerIntegrationTest {
+public class PriceControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -38,23 +38,23 @@ public class SearchControllerIntegrationTest {
     @Test
     public void test1() throws Exception {
         final ResultActions result = this.mockMvc
-            .perform(MockMvcRequestBuilders.get("/v1/search")
-                .param("date", "2020-06-14T10:00")
-                .param("productId", "35455")
+            .perform(MockMvcRequestBuilders.get("/price/35455")
+                .param("date", "2020-06-14T10:00:00")
                 .param("brandId", "1")
             )
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
 
-        final ProductDTO dtoResult = new Gson().fromJson(result.andReturn().getResponse().getContentAsString(),
-            ProductDTO.class);
-        final ProductDTO expected = ProductDTO.builder()
+        final PriceDTO dtoResult = new Gson().fromJson(result.andReturn().getResponse().getContentAsString(),
+            PriceDTO.class);
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        final PriceDTO expected = PriceDTO.builder()
             .brandId("1")
             .productId("35455")
             .priceList("1")
-            .price("35.50")
-            .startDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2020-06-14 10:00:00"))
-            .endDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(" 2020-12-31-23:59:59 "))
+            .price(35.5d)
+            .startDate(simpleDateFormat.parse("2020-06-14 00:00:00"))
+            .endDate(simpleDateFormat.parse("2020-12-31 23:59:59"))
             .build();
         Assertions.assertEquals(expected, dtoResult);
     }

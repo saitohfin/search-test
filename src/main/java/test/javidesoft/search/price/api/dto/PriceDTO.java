@@ -1,18 +1,22 @@
-package test.javidesoft.search;
+package test.javidesoft.search.price.api.dto;
 
 import java.util.Date;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Builder
 @Data
-public class ProductDTO {
+@AllArgsConstructor()
+@NoArgsConstructor()
+public class PriceDTO {
 
     private String productId;
     private String brandId;
     private String priceList;
     private Date startDate;
     private Date endDate;
-    private String price;
+    private Double price;
 }
