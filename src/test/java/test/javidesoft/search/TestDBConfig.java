@@ -42,11 +42,11 @@ public class TestDBConfig {
 
         this.saveAPriceEntity(defaultBrand, dateFormat.parse("2020-06-15 00:00:00"),
             dateFormat.parse("2020-06-15 11:00:00"),
-            defaultProduct, 1, 35.50, defaultCurrency);
+            defaultProduct, 1, 30.50, defaultCurrency);
 
         this.saveAPriceEntity(defaultBrand, dateFormat.parse("2020-06-15 16:00:00"),
             dateFormat.parse("2020-12-31 23:59:59"),
-            defaultProduct, 1, 35.50, defaultCurrency);
+            defaultProduct, 1, 38.95, defaultCurrency);
     }
 
     private BrandEntity saveBrand(final String name) {

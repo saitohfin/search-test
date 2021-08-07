@@ -63,32 +63,104 @@ public class PriceControllerIntegrationTest {
      * Test 2: petición a las 16:00 del día 14 del producto 35455   para la brand 1 (ZARA)
      */
     @Test
-    public void test2() {
-        Assertions.fail();
+    public void test2() throws Exception {
+        final String productId = "35455";
+        final String date = "2020-06-14T16:00:00";
+        final String brandId = "1";
+
+        final ResultActions result = this.findPriceRequest(productId, date, brandId)
+            .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+
+        final PriceDTO dtoResult = new Gson().fromJson(result.andReturn().getResponse().getContentAsString(),
+            PriceDTO.class);
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        final PriceDTO expected = PriceDTO.builder()
+            .brandId(brandId)
+            .productId(productId)
+            .priceList("2")
+            .price(25.45d)
+            .startDate(simpleDateFormat.parse("2020-06-14 15:00:00"))
+            .endDate(simpleDateFormat.parse("2020-06-14 18:30:00"))
+            .build();
+        Assertions.assertEquals(expected, dtoResult);
     }
 
     /**
      * Test 3: petición a las 21:00 del día 14 del producto 35455   para la brand 1 (ZARA)
      */
     @Test
-    public void test3() {
-        Assertions.fail();
+    public void test3() throws Exception {
+        final String productId = "35455";
+        final String date = "2020-06-14T21:00:00";
+        final String brandId = "1";
+
+        final ResultActions result = this.findPriceRequest(productId, date, brandId)
+            .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+
+        final PriceDTO dtoResult = new Gson().fromJson(result.andReturn().getResponse().getContentAsString(),
+            PriceDTO.class);
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        final PriceDTO expected = PriceDTO.builder()
+            .brandId(brandId)
+            .productId(productId)
+            .priceList("1")
+            .price(35.5d)
+            .startDate(simpleDateFormat.parse("2020-06-14 00:00:00"))
+            .endDate(simpleDateFormat.parse("2020-12-31 23:59:59"))
+            .build();
+        Assertions.assertEquals(expected, dtoResult);
     }
 
     /**
      * Test 4: petición a las 10:00 del día 15 del producto 35455   para la brand 1 (ZARA)
      */
     @Test
-    public void test4() {
-        Assertions.fail();
+    public void test4() throws Exception {
+        final String productId = "35455";
+        final String date = "2020-06-15T10:00:00";
+        final String brandId = "1";
+
+        final ResultActions result = this.findPriceRequest(productId, date, brandId)
+            .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+
+        final PriceDTO dtoResult = new Gson().fromJson(result.andReturn().getResponse().getContentAsString(),
+            PriceDTO.class);
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        final PriceDTO expected = PriceDTO.builder()
+            .brandId(brandId)
+            .productId(productId)
+            .priceList("3")
+            .price(30.5d)
+            .startDate(simpleDateFormat.parse("2020-06-15 00:00:00"))
+            .endDate(simpleDateFormat.parse("2020-06-15 11:00:00"))
+            .build();
+        Assertions.assertEquals(expected, dtoResult);
     }
 
     /**
      * Test 5: petición a las 21:00 del día 16 del producto 35455   para la brand 1 (ZARA)
      */
     @Test
-    public void test5() {
-        Assertions.fail();
+    public void test5() throws Exception {
+        final String productId = "35455";
+        final String date = "2020-06-16T21:00:00";
+        final String brandId = "1";
+
+        final ResultActions result = this.findPriceRequest(productId, date, brandId)
+            .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+
+        final PriceDTO dtoResult = new Gson().fromJson(result.andReturn().getResponse().getContentAsString(),
+            PriceDTO.class);
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        final PriceDTO expected = PriceDTO.builder()
+            .brandId(brandId)
+            .productId(productId)
+            .priceList("4")
+            .price(38.95d)
+            .startDate(simpleDateFormat.parse("2020-06-15 16:00:00"))
+            .endDate(simpleDateFormat.parse("2020-12-31 23:59:59"))
+            .build();
+        Assertions.assertEquals(expected, dtoResult);
     }
 
     private ResultActions findPriceRequest(final String productId, final String date, final String brand)
