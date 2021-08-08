@@ -1,7 +1,6 @@
 package test.javidesoft.search.controller;
 
-import java.text.SimpleDateFormat;
-
+import com.google.gson.Gson;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,12 +13,11 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import com.google.gson.Gson;
-
 import test.javidesoft.search.TestDBConfig;
 import test.javidesoft.search.price.api.PriceEndpoint;
 import test.javidesoft.search.price.api.dto.PriceDTO;
+
+import java.text.SimpleDateFormat;
 
 @SpringBootTest
 @Import({TestDBConfig.class})
@@ -161,6 +159,51 @@ public class PriceControllerIntegrationTest {
             .endDate(simpleDateFormat.parse("2020-12-31 23:59:59"))
             .build();
         Assertions.assertEquals(expected, dtoResult);
+    }
+
+    /**
+     * Given: Two valid prices with the same priority
+     * When: Find the price to use
+     * Then: Is returned the price with lowest price
+     */
+    @Test
+    public void twoPricesWithSamePriorityIsTakenTheLowestPrice() throws Exception {
+        final String productId = "35455";
+        final String date = "2021-06-16T21:00:00";
+        final String brandId = "1";
+
+        final ResultActions result = this.findPriceRequest(productId, date, brandId)
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+
+        final PriceDTO dtoResult = new Gson().fromJson(result.andReturn().getResponse().getContentAsString(),
+                PriceDTO.class);
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        final PriceDTO expected = PriceDTO.builder()
+                .brandId(brandId)
+                .productId(productId)
+                .priceList("6")
+                .price(10.0)
+                .startDate(simpleDateFormat.parse("2021-06-15 16:00:00"))
+                .endDate(simpleDateFormat.parse("2021-06-30 23:59:59"))
+                .build();
+        Assertions.assertEquals(expected, dtoResult);
+    }
+
+    /**
+     * Given: Two valid prices with the same priority
+     * When: Find the price to use
+     * Then: Is returned the price with lowest price
+     */
+    @Test
+    public void requestAPriceWhichDoesNotExistsReturns404() throws Exception {
+        final String productId = "35455";
+        final String date = "1998-06-16T21:00:00";
+        final String brandId = "1";
+
+        final ResultActions result = this.findPriceRequest(productId, date, brandId)
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+        final String body = result.andReturn().getResolvedException().getMessage();
+        Assertions.assertEquals("Does not exist a price for this request", body);
     }
 
     private ResultActions findPriceRequest(final String productId, final String date, final String brand)

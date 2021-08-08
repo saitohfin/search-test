@@ -1,13 +1,13 @@
 package test.javidesoft.search.price.service;
 
+import org.springframework.stereotype.Service;
+import test.javidesoft.search.exception.NotFoundException;
+import test.javidesoft.search.price.persistence.PriceEntity;
+import test.javidesoft.search.price.persistence.PricePersistence;
+
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Comparator;
-
-import org.springframework.stereotype.Service;
-
-import test.javidesoft.search.price.persistence.PriceEntity;
-import test.javidesoft.search.price.persistence.PricePersistence;
 
 @Service
 public class PriceService {
@@ -24,6 +24,6 @@ public class PriceService {
         return compatiblePrices.stream()
             .max(Comparator.comparingInt(PriceEntity::getPriority)
                 .thenComparing(PriceEntity::getPrice, Comparator.reverseOrder()))
-            .orElseThrow();
+                .orElseThrow(() -> new NotFoundException("Does not exist a price for this request"));
     }
 }

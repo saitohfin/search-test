@@ -1,17 +1,15 @@
 package test.javidesoft.search;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import javax.annotation.PostConstruct;
-
 import org.springframework.boot.test.context.TestConfiguration;
-
 import test.javidesoft.search.brand.persistence.BrandEntity;
 import test.javidesoft.search.brand.persistence.BrandPersistence;
 import test.javidesoft.search.price.persistence.PriceEntity;
 import test.javidesoft.search.price.persistence.PricePersistence;
+
+import javax.annotation.PostConstruct;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @TestConfiguration
 public class TestDBConfig {
@@ -47,6 +45,14 @@ public class TestDBConfig {
         this.saveAPriceEntity(defaultBrand, dateFormat.parse("2020-06-15 16:00:00"),
             dateFormat.parse("2020-12-31 23:59:59"),
             defaultProduct, 1, 38.95, defaultCurrency);
+
+        this.saveAPriceEntity(defaultBrand, dateFormat.parse("2021-06-15 00:00:00"),
+                dateFormat.parse("2021-06-30 23:59:59"),
+                defaultProduct, 2, 38.95, defaultCurrency);
+
+        this.saveAPriceEntity(defaultBrand, dateFormat.parse("2021-06-15 16:00:00"),
+                dateFormat.parse("2021-06-30 23:59:59"),
+                defaultProduct, 2, 10.00, defaultCurrency);
     }
 
     private BrandEntity saveBrand(final String name) {
@@ -55,9 +61,9 @@ public class TestDBConfig {
         return this.brandPersistence.save(brand);
     }
 
-    private void saveAPriceEntity(final BrandEntity brand, final Date startDate, final Date endDate,
-                                  final String productId, final Integer priority, final Double price,
-                                  final String currency) {
+    public void saveAPriceEntity(final BrandEntity brand, final Date startDate, final Date endDate,
+                                 final String productId, final Integer priority, final Double price,
+                                 final String currency) {
         final PriceEntity entity = new PriceEntity();
         entity.setBrand(brand);
         entity.setProductId(productId);
