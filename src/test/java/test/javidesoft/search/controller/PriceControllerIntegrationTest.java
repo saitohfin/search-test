@@ -190,14 +190,48 @@ public class PriceControllerIntegrationTest {
     }
 
     /**
-     * Given: Two valid prices with the same priority
+     * Given: A date without price
      * When: Find the price to use
-     * Then: Is returned the price with lowest price
+     * Then: Is returned a 404
      */
     @Test
-    public void requestAPriceWhichDoesNotExistsReturns404() throws Exception {
+    public void requestAPriceWithAnInvalidDateReturns404() throws Exception {
         final String productId = "35455";
         final String date = "1998-06-16T21:00:00";
+        final String brandId = "1";
+
+        final ResultActions result = this.findPriceRequest(productId, date, brandId)
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+        final String body = result.andReturn().getResolvedException().getMessage();
+        Assertions.assertEquals("Does not exist a price for this request", body);
+    }
+
+    /**
+     * Given: A brand which doesnt exists
+     * When: Find the price to use
+     * Then: Is returned a 404
+     */
+    @Test
+    public void requestAPriceWithAnBrandReturns404() throws Exception {
+        final String productId = "35455";
+        final String date = "2021-06-16T21:00:00";
+        final String brandId = "99900";
+
+        final ResultActions result = this.findPriceRequest(productId, date, brandId)
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+        final String body = result.andReturn().getResolvedException().getMessage();
+        Assertions.assertEquals("Does not exist a price for this request", body);
+    }
+
+    /**
+     * Given: A product which doesnt exists
+     * When: Find the price to use
+     * Then: Is returned a 404
+     */
+    @Test
+    public void requestAPriceWithAnProductReturns404() throws Exception {
+        final String productId = "999000";
+        final String date = "2021-06-16T21:00:00";
         final String brandId = "1";
 
         final ResultActions result = this.findPriceRequest(productId, date, brandId)
