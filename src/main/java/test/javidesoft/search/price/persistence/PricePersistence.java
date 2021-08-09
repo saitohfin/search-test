@@ -19,8 +19,8 @@ public class PricePersistence {
     }
 
     public Collection<PriceEntity> findPrice(final String productId, final Long brandId, final LocalDateTime date) {
-        return repository
-            .findPriceMostPriority(productId, brandId, Date.from(date.atZone(ZoneId.systemDefault()).toInstant()));
+        return this.repository
+            .findValidPrices(productId, brandId, Date.from(date.atZone(ZoneId.systemDefault()).toInstant()));
     }
 
     @Transactional
